@@ -39,11 +39,13 @@ jobs:
 
       - name: Set required status check (branch protection)
         run: |
-          gh api --method PUT repos/${{ github.repository }}/branches/main/protection \
-            -f required_status_checks.strict=true \
-            -f 'required_status_checks.contexts[]=some-check' \
-            -F enforce_admins=true \
-            -f required_pull_request_reviews=null \
-            -f restrictions=null
+          cat <<'EOF' | gh api --method PUT repos/${{ github.repository }}/branches/main/protection --input -
+          {
+            "required_status_checks": { "strict": true, "contexts": ["some-check"] },
+            "enforce_admins": true,
+            "required_pull_request_reviews": null,
+            "restrictions": null
+          }
+          EOF
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
