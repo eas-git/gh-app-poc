@@ -17,6 +17,16 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
+      - name: Post PR/issue comment
+        run: gh api repos/${{ github.repository }}/issues/1/comments -f body="test comment from GH App"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Dispatch another workflow
+        run: gh api repos/${{ github.repository }}/actions/workflows/target-dispatch.yml/dispatches -f ref=main
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
       - name: List workflow runs (metrics collection)
         run: gh api repos/${{ github.repository }}/actions/runs
         env:
